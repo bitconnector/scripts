@@ -2,8 +2,14 @@
 
 readarray -t MUSIC < musik.txt
 
-RHOST="home"
-OPTIONS="--bwlimit 150"
+
+if [ "$(ip -6 a show scope global)" = "" ]; then
+	RHOST="home"
+	OPTIONS="--bwlimit 150"
+else
+	RHOST="home6"
+fi
+
 
 for  i  in  "${MUSIC[@]}"
 do
