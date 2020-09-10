@@ -1,0 +1,14 @@
+[Unit]
+Description=Tunnel Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=USER
+ExecStart=/usr/bin/ssh -N -R 12345:localhost:12345 REMOTE-HOST
+RestartSec=3
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
