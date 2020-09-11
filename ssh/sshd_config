@@ -1,0 +1,26 @@
+Port 22 #maybe change that
+Protocol 2
+UsePrivilegeSeparation yes
+KeyRegenerationInterval 3600
+ServerKeyBits 2048
+SyslogFacility AUTH
+LogLevel INFO
+LoginGraceTime 120
+PermitRootLogin no
+StrictModes yes
+PubkeyAuthentication yes
+PermitEmptyPasswords no
+#MaxSessions 10
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+AllowTcpForwarding no
+UsePAM no
+Subsystem sftp internal-sftp -u 002
+AllowGroups ssh sftp	#only users in these groups can interact with ssh
+Match Group ssh-pw	#users in this group have password authentication allowed
+	PasswordAuthentication yes
+Match Group sftp	#restrict the users of this group to one directory
+	ChrootDirectory /data
+Match Group ssh-tunnel	#allow the creation of tunnels
+	AllowTcpForwarding yes
+Match all
