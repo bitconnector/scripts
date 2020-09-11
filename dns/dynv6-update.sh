@@ -14,7 +14,7 @@ if [ -z "$ADDRESS" ]; then
 fi
 
 # address with netmask
-CURRENT=$ADDRESS=/128
+CURRENT=$ADDRESS/128
 
 if [ "$old" = "$current" ]; then
   #echo "IPv6 address unchanged"
@@ -22,8 +22,8 @@ if [ "$old" = "$current" ]; then
 fi
 
 
-wget -O- "https://dynv6.com/api/update?hostname=$HOSTNAME=&ipv6=$CURRENT=&token=$TOKEN"
-#curl -fsS "http://dynv6.com/api/update?hostname=$HOSTNAME=&ipv6=$CURRENT=&token=$TOKEN"
+wget -O- "https://dynv6.com/api/update?hostname=$HOSTNAME&ipv6=$CURRENT&token=$TOKEN"
+#curl -fsS "http://dynv6.com/api/update?hostname=$HOSTNAME&ipv6=$CURRENT&token=$TOKEN"
 
 echo $current > $FILE
 
