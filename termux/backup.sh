@@ -5,16 +5,14 @@ readarray -t BACKUP < ~/storage/shared/Documents/backup.txt
 
 RHOST="home"
 
-
-for  i  in  "${BACKUP[@]}"
-do
-rsync -av -e ssh ~/storage/shared/$i $RHOST:"/home/lukas/rsyncHandy"
-	if [ 0 -ne ${PIPESTATUS[0]} ] ; then
-            echo interrupted
-            termux-wake-unlock
-            termux-notification --content "Error: Music" --title "rsyncPictures"
-	exit
-	fi
+for i in "${BACKUP[@]}"; do
+    rsync -av -e ssh ~/storage/shared/$i $RHOST:"/home/lukas/rsyncHandy"
+    if [ 0 -ne ${PIPESTATUS[0]} ]; then
+        echo interrupted
+        termux-wake-unlock
+        termux-notification --content "Error: Music" --title "rsyncPictures"
+        exit
+    fi
 done
 
 termux-notification --content "Finished without errors" --title "rsyncictures"
