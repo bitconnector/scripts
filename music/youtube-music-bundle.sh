@@ -4,19 +4,15 @@ tmpdir="/tmp/music"
 
 for id in $*; do
 
-  file_count=$(find ./ -name "*$id*")
-  file_count_n=${#file_count[0]}
-  file_countx=$(find "$tmpdir" -name "*$id*")
-  file_count_xn=${#file_countx[0]}
-  if [[ $file_count_n -gt 0 ]]; then
-    echo "$file_count"
-    echo "already downloaded 1."
+  if [ ! $(find ./ "$tmpdir" -name \*"$id"\* | wc -l) -eq 0 ]; then
+    if [ ! "$(find "$tmpdir" -name \*"$id"\* | wc -l)" -eq 0 ]; then
+      echo "still in progress ... $id"
+    else
+      echo "$(find ./ -name \*"$id"\*)"
+      echo "already downloaded id."
+    fi
 
-  elif [[ $file_count_xn -gt 0 ]]; then
-    echo "$file_countx"
-    echo "in progress ..."
   else
-
     fileName=$(youtube-dl --get-filename $id --restrict-filenames)
     fileName=${fileName%.*}
 
@@ -27,7 +23,6 @@ for id in $*; do
       echo "already downloaded."
 
     else
-
       videoTitle=$(youtube-dl --get-title $id)
       uploader=$(youtube-dl --get-filename -o '%(uploader)s' $id --restrict-filenames)
 
