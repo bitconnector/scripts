@@ -13,18 +13,30 @@ id=$1
 tmpdir="/tmp/music"
 mkdir -p $tmpdir
 
-#echo "$id"
+#echo "$id = ${#id}"
+
+if [ ${#id} -eq 11 ]; then
+  if [ ! $(find ./ "$tmpdir" -name \*"$id"\* | wc -l) -eq 0 ]; then
+    if [ ! "$(find "$tmpdir" -name \*"$id"\* | wc -l)" -eq 0 ]; then
+      echo "still in progress ... $id"
+    else
+      echo "$(find ./ -name \*"$id"\*)"
+      echo "already downloaded."
+    fi
+    exit 0
+  fi
+else
+  echo "No ID supplied fallback"
+  fileName=$(youtube-dl --get-filename $id --restrict-filenames)
+  fileName=${fileName%.*}
+  if [ ! $(find ./ -name "$fileName.mp3" | wc -l) -eq 0 ]; then
+    echo "already downloaded. Found file $fileName.mp3"
+    exit 1
+  fi
+fi
 
 fileName=$(youtube-dl --get-filename $id --restrict-filenames)
 fileName=${fileName%.*}
-
-file_count=$(find ./ -name "$fileName.mp3")
-file_count_n=${#file_count[0]}
-if [[ $file_count_n -gt 0 ]]; then
-  echo "$file_count"
-  echo "already downloaded."
-  exit 1
-fi
 
 year=$(date +"%Y")
 if [[ ! -d "$year" ]]; then
