@@ -12,8 +12,7 @@ for id in $*; do
     if [ ! "$(find "$tmpdir" -name \*"$id"\* | wc -l)" -eq 0 ]; then
       echo "still in progress ... $id"
     else
-      echo "$(find ./ -name \*"$id"\*)"
-      echo "already downloaded id."
+      echo "already downloaded: $(find ./ -name \*"$id"\*)"
     fi
 
   else
