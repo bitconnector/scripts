@@ -69,17 +69,20 @@ youtube-dl -w --extract-audio --write-thumbnail --restrict-filenames -o "$tmpdir
 
 echo "NORMALIZE"
 
-ffmpeg-normalize $tmpdir/$fileName.opus -nt rms --target-level -14 -c:a libmp3lame -o "$year/$fileName.mp3"
+audio=$(find $tmpdir -name "$fileName.*" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~ /video|audio/) print $1}')
+ffmpeg-normalize $audio -nt rms --target-level -14 -c:a libmp3lame -o "$year/$fileName.mp3"
 
 echo "TAGS"
 
 eyeD3 --quiet --no-color --artist="$artist" --title="$title" "$year/$fileName.mp3"
 
 image=$(find $tmpdir -name "$fileName.*" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}')
+convert $image -trim +repage $image
 if [ ! -f $tmpdir/$fileName.png ]; then
-  ffmpeg -y -hide_banner -loglevel warning -i $image $tmpdir/$fileName.png
+  ffmpeg -y -hide_banner -loglevel warning -i $image $tmpdir/$fileName.jpg
 fi
+mogrify -background White -alpha remove -define jpeg:extent=100KB $tmpdir/$fileName.jpg
 
-eyeD3 --quiet --no-color --add-image "$tmpdir/$fileName.png:FRONT_COVER:$fileName.png" "$year/$fileName.mp3"
+eyeD3 --quiet --no-color --add-image "$tmpdir/$fileName.jpg:FRONT_COVER:$fileName.jpg" "$year/$fileName.mp3"
 
 rm $tmpdir/$fileName.*

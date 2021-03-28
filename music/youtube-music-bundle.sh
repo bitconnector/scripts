@@ -4,6 +4,10 @@ tmpdir="/tmp/music"
 
 for id in $*; do
 
+  if [ ! -d "$tmpdir" ]; then
+    tmpdir="."
+  fi
+
   if [ ! $(find ./ "$tmpdir" -name \*"$id"\* | wc -l) -eq 0 ]; then
     if [ ! "$(find "$tmpdir" -name \*"$id"\* | wc -l)" -eq 0 ]; then
       echo "still in progress ... $id"
