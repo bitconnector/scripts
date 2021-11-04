@@ -39,6 +39,7 @@ fileName=$(youtube-dl --get-filename $id --restrict-filenames)
 fileName=${fileName%.*}
 
 year=$(date +"%Y")
+year="2019"
 if [[ ! -d "$year" ]]; then
   echo "creating $year"
   mkdir $year
