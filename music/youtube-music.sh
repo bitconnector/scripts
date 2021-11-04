@@ -39,7 +39,7 @@ fileName=$(youtube-dl --get-filename $id --restrict-filenames)
 fileName=${fileName%.*}
 
 year=$(date +"%Y")
-year="2019"
+#year="test"
 if [[ ! -d "$year" ]]; then
   echo "creating $year"
   mkdir $year
@@ -78,7 +78,7 @@ echo "TAGS"
 eyeD3 --quiet --no-color --artist="$artist" --title="$title" "$year/$fileName.mp3"
 
 image=$(find $tmpdir -name "$fileName.*" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}')
-convert $image -trim +repage $image
+convert $image -fuzz 5% -trim +repage $image
 if [ ! -f $tmpdir/$fileName.png ]; then
   ffmpeg -y -hide_banner -loglevel warning -i $image $tmpdir/$fileName.jpg
 fi
