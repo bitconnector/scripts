@@ -1,0 +1,12 @@
+[Unit]
+Description=Dynv6 update IPv6 record
+StartLimitIntervalSec=60
+
+[Service]
+User=root
+ExecStart=/opt/dynv6-update.sh
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target

@@ -1,13 +1,13 @@
 #!/bin/bash
 TOKEN="ke5gDKehuikdjDEnekSWO2Di23Kid9"
 HOSTNAME="MYSERVER.dynv6.net"
-SLEEP=30
+SLEEP=30s
 
 OLD=""
 
 while true
 do
-    ADDRESS=$(ip -6 addr list scope global $device | grep -v " fd" | sed -n 's/.*inet6 \([0-9a-f:]\+\).*/\1/p' | head -n 1)
+    ADDRESS=$(ip -6 addr list scope global $device | grep "$mac_id" | sed -n 's/.*inet6 \([0-9a-f:]\+\).*/\1/p' | head -n 1)
     
     if [ -z "$ADDRESS" ]; then
         echo "no IPv6 address found"
