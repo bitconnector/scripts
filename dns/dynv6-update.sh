@@ -1,12 +1,11 @@
 #!/bin/bash
 TOKEN="ke5gDKehuikdjDEnekSWO2Di23Kid9"
-HOSTNAME="MYSERVER.dynv6.net"
+HOSTNAMES=("MYSERVER.dynv6.net" "SECONDDOMAIN.dynv6.net")
 SLEEP=30s
 
 OLD=""
 
-while true
-do
+while true; do
     ADDRESS=$(ip -6 addr list scope global $device | grep "$mac_id" | sed -n 's/.*inet6 \([0-9a-f:]\+\).*/\1/p' | head -n 1)
     
     if [ -z "$ADDRESS" ]; then
@@ -19,8 +18,10 @@ do
     
     if [ "$OLD" != "$CURRENT" ]; then
         echo "IPv6 address changed: $CURRENT"
-        wget -O- -q "https://dynv6.com/api/update?hostname=$HOSTNAME&ipv6=$CURRENT&token=$TOKEN" 2> /dev/null
-        #curl -fsS "http://dynv6.com/api/update?hostname=$HOSTNAME&ipv6=$CURRENT&token=$TOKEN"
+        for HOST in "${HOSTNAMES[@]}"; do
+            wget -O- -q "https://dynv6.com/api/update?hostname=$HOST&ipv6=$CURRENT&token=$TOKEN" 2>/dev/null
+            #curl -fsS "http://dynv6.com/api/update?hostname=$HOST&ipv6=$CURRENT&token=$TOKEN"
+        done
         
         echo ""
         
