@@ -50,10 +50,9 @@ if [[ ! -d "$year" ]]; then
 fi
 
 echo "DOWNLOAD"
-#yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -P $tmpdir $id
-yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -o "$tmpdir/$id" $id
-
 fileName="$tmpdir/$id"
+#yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -P $tmpdir $id
+yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -o "$fileName" "$id"
 
 
 if [ $# -eq 3 ]; then
@@ -77,7 +76,7 @@ fi
 echo "fileName $fileName"
 echo "NORMALIZE"
 
-audio=$(find $tmpdir -name "$id.*" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~ /video|audio/) print $1}')
+audio=$(find $tmpdir -name "$id" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~ /video|audio/) print $1}')
 
 echo "Audio $audio"
 #ffmpeg-normalize $audio -nt rms --target-level -14 -c:a libmp3lame -o "$year/$fileName.mp3"
@@ -88,7 +87,7 @@ echo "TAGS"
 eyeD3 --quiet --no-color --artist="$artist" --title="$title" "$fileName.mp3"
 
 image=$(find $tmpdir -name "$id.*" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}')
-convert $image -fuzz 5% -trim +repage $image
+magick $image -fuzz 5% -trim +repage $image
 ffmpeg -y -hide_banner -loglevel warning -i $image $fileName.jpg
 mogrify -background White -alpha remove -define jpeg:extent=100KB $fileName.jpg
 
