@@ -54,7 +54,6 @@ fileName="$tmpdir/$id"
 #yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -P $tmpdir $id
 yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -o "$fileName" "$id"
 
-
 if [ $# -eq 3 ]; then
   echo "Tags supplied"
   title=$2
@@ -93,7 +92,7 @@ mogrify -background White -alpha remove -define jpeg:extent=100KB $fileName.jpg
 
 eyeD3 --quiet --no-color --add-image "$fileName.jpg:FRONT_COVER:$title.jpg" "$fileName.mp3"
 
-finalName="$(echo $title | tr -s ' ' | tr ' ' '_')-$id.mp3"
+finalName="$(echo $title | tr -s ' ' | tr ' ' '_' | tr '|' '-')-$id.mp3"
 cp $fileName.mp3 $year/$finalName
 
 tmp=$(find $tmpdir -name "*$id*" -type f)
