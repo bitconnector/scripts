@@ -28,6 +28,7 @@ if [ ${#id} -eq 11 ]; then
     fi
     exit 0
   fi
+  ide="youtube.com/watch?v=$id"
 else
   echo "No ID supplied fallback"
   fileName=$(yt-dlp --get-filename $id --restrict-filenames)
@@ -50,6 +51,8 @@ if [[ ! -d "$year" ]]; then
 fi
 
 echo "DOWNLOAD"
+ide="${id/-/\\-}"
+echo "escaped id: $ide"
 fileName="$tmpdir/$id"
 #yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -P $tmpdir $id
 yt-dlp -w --extract-audio --write-thumbnail --restrict-filenames --write-info-json -o "$fileName" "$id"
@@ -75,11 +78,12 @@ fi
 echo "fileName $fileName"
 echo "NORMALIZE"
 
-audio=$(find $tmpdir -name "$id" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~ /video|audio/) print $1}')
+audio=$(find $tmpdir -name "*$id*" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~ /video|audio/) print $1}')
 
 echo "Audio $audio"
 #ffmpeg-normalize $audio -nt rms --target-level -14 -c:a libmp3lame -o "$year/$fileName.mp3"
-ffmpeg-normalize $audio -nt rms --target-level -14 -c:a libmp3lame -o "$fileName.mp3"
+#ffmpeg-normalize $audio -nt rms --target-level -14 -c:a libmp3lame -o "$fileName.mp3"
+ffmpeg -i $audio -filter:a loudnorm -vn -b:a 192k "$fileName.mp3"
 
 echo "TAGS"
 
